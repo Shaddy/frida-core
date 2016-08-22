@@ -88,8 +88,7 @@ namespace Frida {
 		private Winjector winjector = new Winjector ();
 		private AgentDescriptor agent_desc;
 
-		private ApplicationEnumerator application_enumerator = new ApplicationEnumerator ();
-		private ProcessEnumerator process_enumerator = new ProcessEnumerator ();
+		private ApplicationEnumerator application_enumerator = new ApplicationEnumerator ();		
 
 		construct {
 			var blob32 = Frida.Data.Agent.get_frida_agent_32_dll_blob ();
@@ -149,7 +148,7 @@ namespace Frida {
 		}
 
 		public override async HostProcessInfo[] enumerate_processes () throws Error {
-			return yield process_enumerator.enumerate_processes ();
+			return yield winjector.enumerate_processes ();
 		}
 
 		public override async void enable_spawn_gating () throws Error {

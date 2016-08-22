@@ -70,8 +70,9 @@ namespace Winjector {
 		private uint registration_id;
 		private HelperService helper32;
 		private HelperService helper64;
-		private void * context;
-
+		private void * context;		
+		private ProcessEnumerator process_enumerator = new ProcessEnumerator();
+		
 		public Manager (string parent_address, PrivilegeLevel level) {
 			Object (parent_address: parent_address, level: level);
 		}
@@ -157,6 +158,10 @@ namespace Winjector {
 			}
 		}
 
+		public async HostProcessInfo[] enumerate_processes () {
+			return yield process_enumerator.enumerate_processes();
+		}
+
 		private void on_connection_closed (DBusConnection connection, bool remote_peer_vanished, GLib.Error? error) {
 			stop.begin ();
 		}
@@ -202,7 +207,7 @@ namespace Winjector {
 	public abstract class Service : Object, WinjectorHelper {
 		private DBusConnection connection;
 		private uint registration_id;
-
+		private ProcessEnumerator process_enumerator = new ProcessEnumerator() ;
 		private Gee.HashMap<uint32, void *> thread_handle_by_pid = new Gee.HashMap<uint32, void *> ();
 
 		public Service () {
@@ -271,6 +276,9 @@ namespace Winjector {
 			}
 		}
 
+		public async HostProcessInfo[] enumerate_processes () {
+			return yield process_enumerator.enumerate_processes();
+		}
 		public static extern string derive_basename ();
 		public static extern string derive_filename_for_suffix (string suffix);
 		public static extern string derive_svcname_for_self ();
